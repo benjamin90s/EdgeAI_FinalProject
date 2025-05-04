@@ -17,13 +17,13 @@
   
 
 
-### 1- Arun, SrNo- 23037, M.Tech CSA- 
+### 3- Arun, SrNo- 23037, M.Tech CSA- 
     - Data Collection - Crow
     - Model deployment on Edge device
     - Github repo formulation
 
 
-### 1- Suraj Kisku, SrNo- 23019, M.Tech AI- 
+### 4- Suraj Kisku, SrNo- 23019, M.Tech AI- 
    - Data Collection - Parakeet
    - Web dashboard development
    - Github repo formulation
