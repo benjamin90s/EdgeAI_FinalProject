@@ -1,0 +1,8 @@
+tensorflow==2.15.0         # For model development and quantization
+librosa==0.10.1            # For audio preprocessing and MFCCs
+matplotlib==3.8.2          # For visualization (if used)
+scikit-learn==1.4.1        # For metrics or preprocessing
+flask==2.3.3               # For web interface
+flask-socketio==5.3.6      # For real-time communication
+eventlet==0.33.3           # For async Flask support
+

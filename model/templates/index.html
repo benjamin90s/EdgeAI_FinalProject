@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Bird Voice Classifier</title>
+    <script src="https://cdn.socket.io/4.3.2/socket.io.min.js"></script>
+    <style>
+
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background-image: url('https://upload.wikimedia.org/wikipedia/commons/e/e1/Cattle_tyrant_%28Machetornis_rixosa%29_on_Capybara.jpg');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            color: #ffffff;
+        }
+
+        .container {
+            display: flex;
+            gap: 20px;
+        }
+
+        .column {
+            flex: 1;
+        }
+
+        #output {
+            border: 1px solid #ccc;
+            background: rgba(0, 0, 0, 0.6);
+            padding: 15px;
+            height: 300px;
+            overflow-y: scroll;
+            white-space: pre-line;
+            border-radius: 8px;
+        }
+
+        #birdNameDisplay {
+            transition: opacity 0.5s ease;
+            font-size: 36px;
+            font-weight: bold;
+            text-align: center;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.6);
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        button {
+            padding: 10px;
+            font-size: 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <h1>Bird Voice Classifier</h1>
+    <p>Click the button below to start inference:</p>
+    <button onclick="startInference()">Start Inference</button>
+
+    <div class="container">
+        <div class="column">
+            <div id="output">Waiting to start inference...</div>
+        </div>
+        <div class="column">
+            <div id="birdNameDisplay">Bird name will appear here</div>
+        </div>
+    </div>
+    
+    <script>
+        const socket = io();
+    
+        let lastClass = '';
+        let canUpdate = true;  // Flag to check if we can update the class
+        let inferenceResults = {};  // To store the class probabilities
+    
+        socket.on('inference_output', function(msg) {
+            const outputDiv = document.getElementById('output');
+            outputDiv.innerHTML += '\n\n' + msg.data;
+            scrollToBottom(outputDiv);
+    
+            // Accumulate each class probability in inferenceResults
+            processInferenceOutput(msg.data);
+    
+            // Only update the class if it's different from the last one and we can update
+            const maxClass = getMaxClass();
+            if (maxClass !== lastClass && canUpdate) {
+                lastClass = maxClass;
+    
+                // Set flag to false to prevent updates for 1 second
+                canUpdate = false;
+    
+                // Update the displayed class name
+                const displayText = maxClass.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+                const nameDiv = document.getElementById('birdNameDisplay');
+                nameDiv.textContent = displayText;
+    
+                // Optional: briefly highlight the new name
+                nameDiv.style.opacity = '0';
+                setTimeout(() => {
+                    nameDiv.style.opacity = '1';
+                }, 100);
+    
+                // Reset the flag after 1 second
+                setTimeout(() => {
+                    canUpdate = true;
+                }, 1000); // 1 second delay
+            }
+        });
+    
+        function scrollToBottom(div) {
+            setTimeout(() => {
+                div.scrollTop = div.scrollHeight;
+            }, 100);
+        }
+    
+        function startInference() {
+            const outputDiv = document.getElementById('output');
+            outputDiv.innerHTML = 'Starting inference...\n';
+            socket.emit('start_inference');
+        }
+    
+        socket.on('connection_response', function(msg) {
+            console.log(msg.data);
+        });
+    
+        // Function to accumulate class probabilities
+        function processInferenceOutput(outputText) {
+            const lines = outputText.trim().split('\n');
+            lines.forEach(line => {
+                const [label, value] = line.split(':');
+                if (label && value) {
+                    const prob = parseFloat(value.trim());
+                    if (!isNaN(prob)) {
+                        inferenceResults[label.trim()] = prob;
+                    }
+                }
+            });
+        }
+    
+        // Function to get the class with the maximum probability
+        function getMaxClass() {
+            const validClasses = ['Asian_Koel', 'Crow', 'Noise', 'hen', 'parkeet']; // List of valid classes to consider
+            let max = -Infinity;
+            let bestClass = '';
+    
+            // Find the maximum class from the inferenceResults
+            validClasses.forEach(className => {
+                const prob = inferenceResults[className];
+                if (prob > max) {
+                    max = prob;
+                    bestClass = className.toLowerCase().replace(/\s/g, '_');
+                }
+            });
+    
+            return bestClass;
+        }
+    </script>
+    
+      
+</body>
+</html>
