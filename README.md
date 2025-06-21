@@ -76,5 +76,3 @@ Real-time inference is possible on desktop, Raspberry Pi, and compatible microco
 
 ---
 
-## 🏗️ Project Structure
-
