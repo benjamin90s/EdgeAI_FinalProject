@@ -1,70 +1,80 @@
-# EdgeAI_FinalProject
+# 🐦 Bird Voice Recognition on Edge Devices
 
-# 🐤 "BIRD VOICE RECOGNITION WITH DEEP LEARNING MODELS ON ARDUINO 33 BLE SENSE"
+A lightweight, real-time **bird sound classification system** using MFCC audio features, a tiny convolutional neural network (CNN), and TensorFlow Lite for efficient deployment on edge devices.
 
-# Team Member:
-### 1- Shivam Dwivedi, SrNo- 23889, M.Tech AI- 
-    - Data Collection - Asean Koel
-    - Deep Neural Network model development
-    - Report Preparation
+---
 
+## 🚀 Overview
 
+This project builds a robust pipeline for **classifying bird species (and noise) from audio recordings** using deep learning. The workflow includes data preprocessing, feature extraction (MFCCs), training a compact CNN, evaluating its accuracy, and deploying the model using [TensorFlow Lite](https://www.tensorflow.org/lite) and [Edge Impulse](https://edgeimpulse.com/) tools. The system can be integrated into real-world applications such as smart microphones, IoT bird monitoring, or embedded wildlife sensors.
 
-### 2- Benjamin Debabarma, SrNo- 22554, M.Tech AI- 
-    - Data Collection - Hen
-    - Quantization and .tflite conversion
-    - Power Point slides preparation
-  
+---
 
+## 🎤 Data Collection Method
 
-### 3- Arun, SrNo- 23037, M.Tech CSA- 
-    - Data Collection - Crow
-    - Model deployment on Edge device
-    - Github repo formulation
+All audio data used in this project was **collected by the author**:
 
+- **Bird sounds were sourced from public YouTube videos** and played aloud.
+- Each sound was **recorded in real time using the Edge Impulse sound recorder tool**.
+- This method ensures high-quality, realistic samples for each bird species and for the "Noise" class, enabling robust model training and evaluation.
 
-### 4- Suraj Kisku, SrNo- 23019, M.Tech AI- 
-   - Data Collection - Parakeet
-   - Web dashboard development
-   - Github repo formulation
+> **Note:** Care was taken to use only publicly available YouTube audio for research and educational purposes.
 
+---
 
+## 📂 Dataset
 
-Classifies bird calls (sparrow, crow, pigeon) + background using onboard mic and TensorFlow Lite Micro.
+- **Audio classes:**  
+  - Asean_Koel
+  - crow_dataset
+  - hen_cock-export
+  - Noise
+  - Rose_ringed_Parakeet
 
+- **Format:** WAV files, 1 second per sample, 16kHz sample rate.
 
-## 🚀 Features
-- Real-time MFCC + inference on-device
-- Quantized model (~<20KB RAM)
-- Open-source, extendable with more species
-
-## 📦 Folder Structure
-
-- Bird_voice_classifiert/
-│
-├── `/Arduino/` – FFT and MFCC model codes and deployable aurdino model code
-├── `/data/` – .WAV recordings (refer to the readme file inside dataset foled for detailed description)
-└── `/model/` – deployable app.py
-├── requirement.txt
-├── PPT
-└── report
-└── readme.txt
+- **Structure:**  
+dataset/
+├── Asean_Koel/
+├── crow_dataset/
+├── hen_cock-export/
+└── Rose_ringed_Parakeet/
 
 
+---
 
-## 🔧 Tools Used
-- Arduino IDE + Arduino_TensorFlowLite
-- TensorFlow (Python)
-- PDM mic (onboard)
-- Flask + Flask-SocketIO + Eventlet 
+## 🛠️ Features & Methods
 
+- **MFCC Extraction:**  
+- 13 Mel-frequency cepstral coefficients per frame, padded/truncated to 1 second.
+- Input to the CNN: (13, time_steps, 1) "image".
 
-## Links:
-- Demo Video Link: https://drive.google.com/drive/folders/1eOMqtQF8vd44R0bCNtAWpf3L7OouHOOJ?usp=drive_link 
- 
+- **Model:**  
+- Small convolutional neural network (CNN)
+- Two Conv2D layers, MaxPooling, Dense, and Softmax output
+- Less than 5k parameters (suitable for microcontrollers and phones)
 
-## Acknowledgment 
-- Prof Pandaraswamy Arjunan for hiw valuable guidance 
-- [xeno-canto](https://xeno-canto.org/) — xeno-canto is a website dedicated to sharing wildlife sounds from all over the world. We have used their recordings to prepare this dataset.
+- **Training:**  
+- Data split: 80% train, 20% test
+- Optimizer: Adam
+- Loss: Sparse categorical cross-entropy
+- Metrics: Accuracy
 
-- [Edge Impulse](https://edgeimpulse.com/) — Platform used to prepare and process the dataset.
+- **Deployment:**  
+- Model converted to TensorFlow Lite (`.tflite`) format for efficient edge inference.
+- Optional: Automated batch file for inference on Windows or via Edge Impulse runner.
+
+---
+
+## 📈 Results
+
+- **Test Accuracy:**  
+Achieved >96% accuracy on the held-out test set for the 5-class bird/ambient sound dataset.
+
+- **Inference:**  
+Real-time inference is possible on desktop, Raspberry Pi, and compatible microcontrollers using TFLite and Edge Impulse tools.
+
+---
+
+## 🏗️ Project Structure
+
