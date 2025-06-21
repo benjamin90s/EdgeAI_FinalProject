@@ -62,7 +62,7 @@ dataset/
 
 - **Deployment:**  
 - Model converted to TensorFlow Lite (`.tflite`) format for efficient edge inference.
-- Optional: Automated batch file for inference on Windows or via Edge Impulse runner.
+- Automated batch file for inference on Windows or via Edge Impulse runner.
 
 ---
 
